@@ -1,29 +1,47 @@
+using BusinessLogic.CQRS.GetConfigItem;
 using Microsoft.Extensions.FileProviders;
 
-var builder = WebApplication.CreateBuilder(args);
+namespace Az204WebApp
+{
+    public static class Program
+    {
+        public static void Main(string[] args)
+        {
+            var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+            // Add services to the container.
+            ConfigureServices(builder);
 
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+            builder.Services.AddControllers();
 
-var app = builder.Build();
+            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen();
 
-app.UseFileServer();
+            var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-//if (app.Environment.IsDevelopment())
-//{
-app.UseSwagger();
-app.UseSwaggerUI();
-//}
+            app.UseFileServer();
 
-app.UseHttpsRedirection();
+            // Configure the HTTP request pipeline.
+            //if (app.Environment.IsDevelopment())
+            //{
+            app.UseSwagger();
+            app.UseSwaggerUI();
+            //}
 
-app.UseAuthorization();
+            app.UseHttpsRedirection();
 
-app.MapControllers();
+            app.UseAuthorization();
 
-app.Run();
+            app.MapControllers();
+
+            app.Run();
+        }
+
+        static void ConfigureServices(WebApplicationBuilder builder)
+        {
+            builder.Services
+                .AddMediatR(configuration => configuration.RegisterServicesFromAssemblyContaining(typeof(GetConfigItemQuery)));
+        }
+    }
+}
